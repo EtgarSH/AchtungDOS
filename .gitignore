@@ -1,0 +1,16 @@
+# Jedit files
+*.asm~
+*.asm#
+
+# Assembler (Compiler) Files
+*.map
+*.exe
+*.obj
+*.tr
+
+# C++ (Compiler) Files
+*.bak
+*.swp
+
+# Personal Scripts
+*.bat
