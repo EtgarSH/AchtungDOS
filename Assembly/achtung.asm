@@ -4,25 +4,66 @@ STACK 100h
 DATASEG
 	last_video_mode db 0
 
-	dot_x dw 380
-	dot_y dw 380
+	dot_x dw 0
+	dot_y dw 0
 
 	speed_x dw 0
 	speed_y dw 0
 
 	pressed_key db 0
 
-	LEFT_KEY equ 'a'
-	RIGHT_KEY equ 'd'
+	; strings:
+	menu 	db "          Welcome to Achtung!", 10
+			db "       Press Enter to start game,", 10
+			db "          Press ESC to exit...", 10, "$"
+
+	A_KEY equ 'a'
+	D_KEY equ 'd'
+	SPACEBAR_KEY equ 20h
+
 
 CODESEG
-
 start:
+
 	mov ax, @data
 	mov ds, ax
 
 	call GetVideoMode
 	call EnterGraphicsMode
+
+menu_creation:
+	call EnterGraphicsMode
+	call DrawFrame
+
+	mov bh, 0
+	mov dh, 10
+	mov dl, 0
+	mov ah, 2
+	int 10h
+
+	mov ah, 9
+	mov dx, offset menu
+	int 21h
+
+menu_loop:
+	call ReadKey
+
+	cmp [pressed_key], 13
+	jz game_creation
+
+	cmp [pressed_key], 27
+	jnz menu_loop
+	jmp exit
+
+game_creation:
+	call EnterGraphicsMode
+
+	mov [speed_x], 1
+	mov [speed_y], 0
+	mov [dot_x], 160
+	mov [dot_y], 100
+
+	call DrawFrame
 
 gameloop:
 	mov ah, 86h
@@ -32,21 +73,25 @@ gameloop:
 
 	call ReadKey
 	call ConvertToMovement
-	call MoveDot
-	call PrintDot
+	call UpdateDot
 
+	mov cx, [dot_x]
+	mov dx, [dot_y]
+	call CheckLocation
+
+	cmp [pressed_key], SPACEBAR_KEY
+	jz SpaceDot1
+	call PrintDot
+SpaceDot1:
 	cmp [pressed_key], 27
 	jnz gameloop
+	jmp menu_creation
 
 
 exit:
 	call ReturnToLastVideoMode
 	mov ax, 4c00h
 	int 21h
-
-proc Delay
-	
-endp Delay
 
 proc ReadKey
 	push ax
@@ -64,59 +109,24 @@ proc ReadKey
 endp ReadKey
 
 proc ConvertToMovement
-	cmp [pressed_key], RIGHT_KEY
-	jz right_key_pressed
+	cmp [pressed_key], D_KEY
+	jz d_key_pressed
 
-	cmp [pressed_key], LEFT_KEY
-	jz left_key_pressed
+	cmp [pressed_key], A_KEY
+	jz a_key_pressed
 
 	jmp continue_ConvertToMovement
 
-right_key_pressed:
+d_key_pressed:
 	call MoveDotRight
 	jmp continue_ConvertToMovement
-left_key_pressed:
+a_key_pressed:
 	call MoveDotLeft
 	jmp continue_ConvertToMovement
 
 continue_ConvertToMovement:
 	ret
 endp ConvertToMovement
-
-proc PrintDot
-	push ax
-	push bx
-	push dx
-	push cx
-
-	mov ah, 0ch
-	mov al, 6
-	xor bh, bh
-	mov cx, [dot_x]
-	mov dx, [dot_y]
-	int 10h
-
-	pop cx
-	pop dx
-	pop bx
-	pop ax
-	ret
-endp PrintDot
-
-proc MoveDot
-	push ax
-
-	mov ax, [dot_x]
-	add ax, [speed_x]
-	mov [dot_x], ax
-
-	mov ax, [dot_y]
-	add ax, [speed_y]
-	mov [dot_y], ax
-
-	pop ax
-	ret
-endp MoveDot
 
 proc EnterGraphicsMode
 	push ax
@@ -151,63 +161,25 @@ proc ReturnToLastVideoMode
 	ret
 endp ReturnToLastVideoMode
 
-proc MoveDotRight
-	cmp [speed_x], 0
-	jg MoveDotRightP_moving_right
-	jl MoveDotRightP_moving_left
+proc CheckLocation ; cx - x, dx - y 
+	push bx
+	push ax
 
-	cmp [speed_y], 0
-	jg MoveDotRightP_moving_down
-	jl MoveDotRightP_moving_up
+	mov ah, 0dh
+	xor bh, bh
+	int 10h
 
-MoveDotRightP_moving_right:
-	mov [speed_x], 0
-	mov [speed_y], 1
-	jmp continue_moving_right
-MoveDotRightP_moving_left:
-	mov [speed_x], 0
-	mov [speed_y], -1
-	jmp continue_moving_right
-MoveDotRightP_moving_up:
-	mov [speed_x], 1
-	mov [speed_y], 0
-	jmp continue_moving_right
-MoveDotRightP_moving_down:
-	mov [speed_x], -1
-	mov [speed_y], 0
-	jmp continue_moving_right
+	cmp al, 0
+	jz return_CheckLocationProc
 
-continue_moving_right:
+	pop ax
+	pop bx
+	jmp menu_creation
+return_CheckLocationProc:
+	pop ax
+	pop bx
 	ret
-endp MoveDotRight
-
-proc MoveDotLeft
-	cmp [speed_x], 0
-	jg MoveDotLeftP_moving_right
-	jl MoveDotLeftP_moving_left
-
-	cmp [speed_y], 0
-	jg MoveDotLeftP_moving_down
-	jl MoveDotLeftP_moving_up
-
-MoveDotLeftP_moving_right:
-	mov [speed_x], 0
-	mov [speed_y], -1
-	jmp continue_moving_left
-MoveDotLeftP_moving_left:
-	mov [speed_x], 0
-	mov [speed_y], 1
-	jmp continue_moving_left
-MoveDotLeftP_moving_up:
-	mov [speed_x], -1
-	mov [speed_y], 0
-	jmp continue_moving_left
-MoveDotLeftP_moving_down:
-	mov [speed_x], 1
-	mov [speed_y], 0
-	jmp continue_moving_left
-continue_moving_left:
-	ret
-endp MoveDotLeft
+endp CheckLocation
+include "graphics.asm"
 
 end start
