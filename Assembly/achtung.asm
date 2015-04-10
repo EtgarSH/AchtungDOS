@@ -2,14 +2,30 @@ IDEAL
 MODEL small
 STACK 100h
 DATASEG
+	
+	; Graphic details
 	last_video_mode db 0
 
+
+	; First Player's details
 	dot_x dw 0
 	dot_y dw 0
 
 	speed_x dw 0
 	speed_y dw 0
 
+	dot_color db 4
+
+	; Second Player's details
+	dot2_x dw 0
+	dot2_y dw 0
+
+	speed2_x dw 0
+	speed2_y dw 0
+
+	dot2_color db 0eh
+
+	; Keyboard
 	pressed_key db 0
 
 	; strings:
@@ -17,12 +33,19 @@ DATASEG
 			db "       Press Enter to start game,", 10
 			db "          Press ESC to exit...", 10, "$"
 
+	; Keys constants
 	A_KEY equ 'a'
 	D_KEY equ 'd'
+	LEFT_KEY equ ','
+	RIGHT_KEY equ '.'
 	SPACEBAR_KEY equ 20h
 
 
+
 CODESEG
+
+include "MoveM.asm"
+
 start:
 
 	mov ax, @data
@@ -63,6 +86,11 @@ game_creation:
 	mov [dot_x], 160
 	mov [dot_y], 100
 
+	mov [speed2_x], -1
+	mov [speed2_y], 0
+	mov [dot2_x], 120
+	mov [dot2_y], 20
+
 	call DrawFrame
 
 gameloop:
@@ -72,19 +100,30 @@ gameloop:
 	int 15h
 
 	call ReadKey
-	call ConvertToMovement
-	call UpdateDot
+
+	ConvertToMovement D_KEY, A_KEY, speed_x, speed_y
+	UpdateDot dot_x, dot_y, speed_x, speed_y
+
+	ConvertToMovement RIGHT_KEY, LEFT_KEY, speed2_x, speed2_y
+	UpdateDot dot2_x, dot2_y, speed2_x, speed2_y
 
 	mov cx, [dot_x]
 	mov dx, [dot_y]
 	call CheckLocation
 
-	cmp [pressed_key], SPACEBAR_KEY
-	jz SpaceDot1
-	call PrintDot
-SpaceDot1:
+	mov cx, [dot2_x]
+	mov dx, [dot2_y]
+	call CheckLocation
+
+	PrintDot dot_x, dot_y, dot_color
+	PrintDot dot2_x, dot2_y, dot2_color
+
 	cmp [pressed_key], 27
-	jnz gameloop
+	jz jump_menu_creation
+; This is only because of the jump disability of 8086...
+gameloop_continue:
+	jmp gameloop
+jump_menu_creation:
 	jmp menu_creation
 
 
@@ -107,26 +146,6 @@ proc ReadKey
 	pop ax
 	ret
 endp ReadKey
-
-proc ConvertToMovement
-	cmp [pressed_key], D_KEY
-	jz d_key_pressed
-
-	cmp [pressed_key], A_KEY
-	jz a_key_pressed
-
-	jmp continue_ConvertToMovement
-
-d_key_pressed:
-	call MoveDotRight
-	jmp continue_ConvertToMovement
-a_key_pressed:
-	call MoveDotLeft
-	jmp continue_ConvertToMovement
-
-continue_ConvertToMovement:
-	ret
-endp ConvertToMovement
 
 proc EnterGraphicsMode
 	push ax
@@ -170,12 +189,12 @@ proc CheckLocation ; cx - x, dx - y
 	int 10h
 
 	cmp al, 0
-	jz return_CheckLocationProc
+	jz @@return
 
 	pop ax
 	pop bx
 	jmp menu_creation
-return_CheckLocationProc:
+@@return:
 	pop ax
 	pop bx
 	ret
