@@ -21,7 +21,7 @@ macro PrintDot DOT_X, DOT_Y, COLOR
 	push cx
 
 	mov ah, 0ch
-	mov al, COLOR
+	mov al, [COLOR]
 	xor bh, bh
 	mov cx, [DOT_X]
 	mov dx, [DOT_Y]

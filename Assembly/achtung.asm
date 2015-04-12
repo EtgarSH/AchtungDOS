@@ -199,6 +199,7 @@ proc CheckLocation ; cx - x, dx - y
 	pop bx
 	ret
 endp CheckLocation
+
 include "graphics.asm"
 
 end start
