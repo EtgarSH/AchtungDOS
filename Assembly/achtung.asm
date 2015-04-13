@@ -138,38 +138,6 @@ proc ReturnToLastVideoMode
 	ret
 endp ReturnToLastVideoMode
 
-; proc CheckLocation ; cx - x, dx - y 
-; 	push bx
-; 	push ax
-
-; 	mov ah, 0dh
-; 	xor bh, bh
-; 	int 10h
-
-; 	cmp al, 0
-; 	jz @@return
-
-; 	pop ax
-; 	pop bx
-; 	jmp menu_creation
-; @@return:
-; 	pop ax
-; 	pop bx
-; 	ret
-; endp CheckLocation
-
-<<<<<<< HEAD
-=======
-	pop ax
-	pop bx
-	jmp menu_creation
-@@return:
-	pop ax
-	pop bx
-	ret
-endp CheckLocation
-
->>>>>>> origin/master
 include "graphics.asm"
 
 end start

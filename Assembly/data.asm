@@ -24,7 +24,7 @@
 
 	dot2_in_game db 1
 
-	winner db "Fred$"
+	winner db 10 dup("$")
 
 	; Keyboard
 	pressed_key db 0
