@@ -158,6 +158,18 @@ endp ReturnToLastVideoMode
 ; 	ret
 ; endp CheckLocation
 
+<<<<<<< HEAD
+=======
+	pop ax
+	pop bx
+	jmp menu_creation
+@@return:
+	pop ax
+	pop bx
+	ret
+endp CheckLocation
+
+>>>>>>> origin/master
 include "graphics.asm"
 
 end start
