@@ -48,7 +48,3 @@ proc ColorScreen ; al - color
 	pop cx
 	ret
 endp ColorScreen
-
-proc WhoWin 
-	
-endp WhoWin
