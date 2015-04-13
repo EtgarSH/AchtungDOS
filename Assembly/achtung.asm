@@ -8,6 +8,7 @@ include "data.asm"
 CODESEG
 
 include "MoveM.asm"
+include "LogicM.asm"
 
 start:
 
@@ -44,15 +45,9 @@ menu_loop:
 game_creation:
 	call EnterGraphicsMode
 
-	mov [speed_x], 1
-	mov [speed_y], 0
-	mov [dot_x], 160
-	mov [dot_y], 100
+	ResetData
 
-	mov [speed2_x], -1
-	mov [speed2_y], 0
-	mov [dot2_x], 120
-	mov [dot2_y], 20
+
 
 	call DrawFrame
 
@@ -70,14 +65,15 @@ gameloop:
 	ConvertToMovement RIGHT_KEY, LEFT_KEY, speed2_x, speed2_y
 	UpdateDot dot2_x, dot2_y, speed2_x, speed2_y
 
-	CheckLocation dot_x, dot_y
-	CheckLocation dot2_x, dot2_y
+	CheckLocation dot_x, dot_y, dot_in_game
+	CheckLocation dot2_x, dot2_y, dot2_in_game
 
 	PrintDot dot_x, dot_y, dot_color
 	PrintDot dot2_x, dot2_y, dot2_color
 
 	cmp [pressed_key], 27
 	jz jump_menu_creation
+	call TryEnd
 ; This is only because of the jump disability of 8086...
 gameloop_continue:
 	jmp gameloop
@@ -139,5 +135,6 @@ proc ReturnToLastVideoMode
 endp ReturnToLastVideoMode
 
 include "graphics.asm"
+include "LogicP.asm"
 
 end start

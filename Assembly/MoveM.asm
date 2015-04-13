@@ -126,37 +126,3 @@ macro MoveDotRight DOT_SPEED_X, DOT_SPEED_Y
 
 @@continue:
 endm MoveDotRight
-
-macro CheckLocation DOT_X, DOT_Y
-	local @@return
-
-	push bx
-	push ax
-	push cx
-	push dx
-
-	mov cx, [DOT_X]
-	mov dx, [DOT_Y]
-
-	mov ah, 0dh
-	xor bh, bh
-	int 10h
-
-	cmp al, 0
-	jz @@return
-
-	pop dx
-	pop cx
-	pop ax
-	pop bx
-	jmp menu_creation
-@@return:
-	pop dx
-	pop cx
-	pop ax
-	pop bx
-endm CheckLocation
-
-macro Lose DOT_IN_GAME
-	mov [DOT_IN_GAME], 0
-endm Lose
