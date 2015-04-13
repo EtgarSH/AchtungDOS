@@ -2,45 +2,8 @@ IDEAL
 MODEL small
 STACK 100h
 DATASEG
-	
-	; Graphic details
-	last_video_mode db 0
 
-
-	; First Player's details
-	dot_x dw 0
-	dot_y dw 0
-
-	speed_x dw 0
-	speed_y dw 0
-
-	dot_color db 4
-
-	; Second Player's details
-	dot2_x dw 0
-	dot2_y dw 0
-
-	speed2_x dw 0
-	speed2_y dw 0
-
-	dot2_color db 0eh
-
-	; Keyboard
-	pressed_key db 0
-
-	; strings:
-	menu 	db "          Welcome to Achtung!", 10
-			db "       Press Enter to start game,", 10
-			db "          Press ESC to exit...", 10, "$"
-
-	; Keys constants
-	A_KEY equ 'a'
-	D_KEY equ 'd'
-	LEFT_KEY equ ','
-	RIGHT_KEY equ '.'
-	SPACEBAR_KEY equ 20h
-
-
+include "data.asm"
 
 CODESEG
 
@@ -71,10 +34,10 @@ menu_creation:
 menu_loop:
 	call ReadKey
 
-	cmp [pressed_key], 13
+	cmp [pressed_key], ENTER_KEY
 	jz game_creation
 
-	cmp [pressed_key], 27
+	cmp [pressed_key], ESCAPE_KEY
 	jnz menu_loop
 	jmp exit
 
@@ -107,13 +70,8 @@ gameloop:
 	ConvertToMovement RIGHT_KEY, LEFT_KEY, speed2_x, speed2_y
 	UpdateDot dot2_x, dot2_y, speed2_x, speed2_y
 
-	mov cx, [dot_x]
-	mov dx, [dot_y]
-	call CheckLocation
-
-	mov cx, [dot2_x]
-	mov dx, [dot2_y]
-	call CheckLocation
+	CheckLocation dot_x, dot_y
+	CheckLocation dot2_x, dot2_y
 
 	PrintDot dot_x, dot_y, dot_color
 	PrintDot dot2_x, dot2_y, dot2_color
@@ -180,25 +138,26 @@ proc ReturnToLastVideoMode
 	ret
 endp ReturnToLastVideoMode
 
-proc CheckLocation ; cx - x, dx - y 
-	push bx
-	push ax
+; proc CheckLocation ; cx - x, dx - y 
+; 	push bx
+; 	push ax
 
-	mov ah, 0dh
-	xor bh, bh
-	int 10h
+; 	mov ah, 0dh
+; 	xor bh, bh
+; 	int 10h
 
-	cmp al, 0
-	jz @@return
+; 	cmp al, 0
+; 	jz @@return
 
-	pop ax
-	pop bx
-	jmp menu_creation
-@@return:
-	pop ax
-	pop bx
-	ret
-endp CheckLocation
+; 	pop ax
+; 	pop bx
+; 	jmp menu_creation
+; @@return:
+; 	pop ax
+; 	pop bx
+; 	ret
+; endp CheckLocation
+
 include "graphics.asm"
 
 end start
