@@ -2,6 +2,7 @@ CODESEG
 
 macro CheckLocation DOT_X, DOT_Y, DOT_IN_GAME
 	local @@return
+	local @@lose
 
 	push bx
 	push ax
@@ -16,14 +17,17 @@ macro CheckLocation DOT_X, DOT_Y, DOT_IN_GAME
 	int 10h
 
 	cmp al, 0
-	jz @@return
+	jnz @@lose
+	jmp @@return
 
+@@lose:
 	pop dx
 	pop cx
 	pop ax
 	pop bx
 	mov [DOT_IN_GAME], 0
 ;	jmp menu_creation
+
 @@return:
 	pop dx
 	pop cx

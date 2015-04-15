@@ -76,7 +76,7 @@ proc PrintColoredString ; bx - offset
 	jmp @@string_iteration
 
 @@not_color_sign:
-	cmp is_color_num, 1
+	cmp [is_color_num], 1
 	jnz @@not_color_num
 
 	call AsciiToColor
