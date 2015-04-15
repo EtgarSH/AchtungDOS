@@ -1,3 +1,7 @@
+DATASEG
+	color db 2
+	is_color_num db 0
+CODESEG
 proc DrawFrame
 	push ax
 	push cx
@@ -48,3 +52,64 @@ proc ColorScreen ; al - color
 	pop cx
 	ret
 endp ColorScreen
+
+proc PrintColoredString ; bx - offset
+	push ax
+	push si
+	push cx
+
+	mov ah, 0eh
+	xor si, si
+
+@@string_iteration:
+	mov al, [byte ptr bx+si]
+
+	cmp al, '$'
+	jz @@return
+
+	cmp al, '&'
+	jnz @@not_color_sign
+
+@@color_sign:
+	mov [is_color_num], 1
+	inc si
+	jmp @@string_iteration
+
+@@not_color_sign:
+	cmp is_color_num, 1
+	jnz @@not_color_num
+
+	call AsciiToColor
+	mov [color], al
+	mov [is_color_num], 0
+	inc si
+	jmp @@string_iteration
+@@not_color_num:
+	push bx
+	xor bh, bh
+	mov bl, [color]
+	int 10h
+	pop bx
+	inc si
+	jmp @@string_iteration
+
+@@return:
+	pop cx
+	pop si
+	pop ax
+	ret
+endp PrintColoredString
+
+proc AsciiToColor ; al - ascii
+	
+	cmp al, 'a'
+	jl @@number
+	sub al, 15h
+	jmp @@return
+@@number:
+	sub al, 30h
+	jmp @@return
+
+@@return:
+	ret
+endp AsciiToColor

@@ -24,7 +24,7 @@
 
 	dot2_color db 4h
 
-	dot2_name db "&4Fred$"
+	dot2_name db "&4Fr&eed$"
 
 	dot2_in_game db 1
 
