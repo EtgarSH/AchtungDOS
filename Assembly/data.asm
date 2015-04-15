@@ -24,7 +24,7 @@
 
 	dot2_color db 4h
 
-	dot2_name db "&4Fr&eed$"
+	dot2_name db "&4Fred$"
 
 	dot2_in_game db 1
 
@@ -38,7 +38,7 @@
 			db "       Press Enter to start game,", 10
 			db "          Press ESC to exit...", 10, "$"
 
-	winner_msg db "The winner is: $"
+	winner_msg db "&9The winner is: $"
 
 	; Keys constants
 	ESCAPE_KEY equ 27
