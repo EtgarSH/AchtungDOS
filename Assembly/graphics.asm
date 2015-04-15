@@ -113,3 +113,21 @@ proc AsciiToColor ; al - ascii
 @@return:
 	ret
 endp AsciiToColor
+
+proc MoveCursorToCenter ; used in LogicP.asm
+	push ax
+	push bx
+	push dx	
+
+
+	mov ah, 2h
+	xor bh, bh
+	mov dh, 10
+	mov dl, 9
+	int 10h
+
+	pop dx
+	pop bx
+	pop ax
+	ret
+endp MoveCursorToCenter

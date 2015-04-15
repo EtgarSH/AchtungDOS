@@ -30,10 +30,12 @@ proc EndGame
 	push dx
 	push bx
 @@end_game_creator:
+	call MoveCursorToCenter
 
-	mov ah, 9
-	mov dx, offset winner_msg
-	int 21h
+
+
+	mov bx, offset winner_msg
+	call PrintColoredString
 
 	mov bx, offset winner
 	call PrintColoredString
@@ -42,6 +44,10 @@ proc EndGame
 	mov cl, [pressed_key]
 @@end_game_loop:
 	call ReadKey
+
+	cmp [pressed_key], ESCAPE_KEY
+	jz @@back_to_menu
+
 	cmp [pressed_key], ENTER_KEY
 	jnz @@end_game_loop
 
@@ -51,4 +57,10 @@ proc EndGame
 	pop dx
 	pop ax
 	jmp game_creation
+@@back_to_menu:
+	pop cx
+	pop bx
+	pop dx
+	pop ax
+	jmp menu_creation
 endp EndGame
