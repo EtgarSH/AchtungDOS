@@ -1,5 +1,13 @@
+;------------------------------------------
+; File        : LogicM.asm
+; Parent      : achtung.asm
+; Authors     : Etgar
+; Description : This file contains the game's logical ideas macros.
+;------------------------------------------
+
 CODESEG
 
+; Check if the location of the dot is ok and if he don't crash something, if so, the other player will win.
 macro CheckLocation DOT_X, DOT_Y, DOT_IN_GAME
 	local @@return
 	local @@lose
@@ -47,6 +55,7 @@ macro UpdateRemPlayers COUNTER, DOT_IN_GAME, DOT_NAME
 
 endm UpdateRemPlayers
 
+; Change the winner in the data segment (see 'data.asm')
 macro SetWinner DOT_NAME
 	local @@CopyLoop
 

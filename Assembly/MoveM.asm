@@ -1,5 +1,13 @@
+;------------------------------------------
+; File        : MoveM.asm
+; Parent      : achtung.asm
+; Authors     : Etgar
+; Description : This file contains graphical movement macros.
+;------------------------------------------
+
 CODESEG
 
+; Update the dot's location by it's speed
 macro UpdateDot DOT_X, DOT_Y, DOT_SPEED_X, DOT_SPEED_Y
 	push ax
 
@@ -14,6 +22,7 @@ macro UpdateDot DOT_X, DOT_Y, DOT_SPEED_X, DOT_SPEED_Y
 	pop ax
 endm UpdateDot
 
+; Prints the dot in the right location.
 macro PrintDot DOT_X, DOT_Y, COLOR
 	push ax
 	push bx
@@ -33,6 +42,7 @@ macro PrintDot DOT_X, DOT_Y, COLOR
 	pop ax
 endm PrintDot
 
+; Convert the players' input to dot's movement.
 macro ConvertToMovement R_KEY, L_KEY, DOT_SPEED_X, DOT_SPEED_Y
 	local @@right_key_pressed
 	local @@left_key_pressed
@@ -57,6 +67,7 @@ macro ConvertToMovement R_KEY, L_KEY, DOT_SPEED_X, DOT_SPEED_Y
 
 endm ConverToMovement
 
+; Moves dot to left (by first person's view)
 macro MoveDotLeft DOT_SPEED_X, DOT_SPEED_Y
 	local @@moving_right
 	local @@moving_left
@@ -92,6 +103,7 @@ macro MoveDotLeft DOT_SPEED_X, DOT_SPEED_Y
 
 endm MoveDotLeft
 
+; Moves dot to right (by first person's view)
 macro MoveDotRight DOT_SPEED_X, DOT_SPEED_Y
 	local @@moving_right
 	local @@moving_left

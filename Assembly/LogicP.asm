@@ -1,5 +1,13 @@
+;------------------------------------------
+; File        : LogicM.asm
+; Parent      : achtung.asm
+; Authors     : Etgar
+; Description : This file contains the game's logical ideas procedures.
+;------------------------------------------
+
 CODESEG
 
+; Returns how many players remained in the game
 proc HowManyPlayersInGame
 	push ax
 
@@ -14,7 +22,7 @@ proc HowManyPlayersInGame
 	ret
 endp HowManyPlayersInGame
 
-
+; Check if there is a winner. If so, ends the game.
 proc TryEnd ; using HowManyPlayersInGame procedure
 
 	call HowManyPlayersInGame

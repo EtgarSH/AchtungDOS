@@ -1,8 +1,15 @@
+;------------------------------------------
+; File        : graphics.asm
+; Parent      : achtung.asm
+; Authors     : Etgar
+; Description : This file contains graphics procedure.
+;------------------------------------------
 DATASEG
 	color db 2
 	is_color_num db 0
 CODESEG
-proc DrawFrame
+
+proc DrawFrame ; Creates the purple frame - above the screen and below the screen.
 	push ax
 	push cx
 	push di
@@ -29,6 +36,7 @@ proc DrawFrame
 	ret
 endp DrawFrame
 
+; Change the color of the screen.
 proc ColorScreen ; al - color
 	push cx
 	push di
@@ -53,6 +61,7 @@ proc ColorScreen ; al - color
 	ret
 endp ColorScreen
 
+; Print a colored string
 proc PrintColoredString ; bx - offset
 	push ax
 	push si
@@ -100,6 +109,7 @@ proc PrintColoredString ; bx - offset
 	ret
 endp PrintColoredString
 
+; Converts an hex code to color code dependent on the DOS default palette.
 proc AsciiToColor ; al - ascii
 	
 	cmp al, 'a'
@@ -114,6 +124,7 @@ proc AsciiToColor ; al - ascii
 	ret
 endp AsciiToColor
 
+; Moves the cursor to the center
 proc MoveCursorToCenter ; used in LogicP.asm
 	push ax
 	push bx

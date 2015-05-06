@@ -1,3 +1,9 @@
+;------------------------------------------
+; File        : data.asm
+; Parent      : achtung.asm
+; Authors     : Etgar
+; Description : This file contains the data of his parent.
+;------------------------------------------
 	; Graphic details
 	last_video_mode db 0
 
