@@ -27,7 +27,7 @@ proc TryEnd ; using HowManyPlayersInGame procedure
 
 	call HowManyPlayersInGame
 	cmp [remaining_players], 1
-	jnz @@return
+	ja @@return
 	call EndGame
 @@return:
 	ret
