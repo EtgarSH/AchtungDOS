@@ -37,12 +37,9 @@ menu_creation:
 	call EnterGraphicsMode
 	call DrawFrame
 
-	mov bh, 0
-	mov dh, 10
-	mov dl, 0
-	mov ah, 2
-	int 10h
+	call MoveCursorToCenter
 
+	; Print the menu message
 	mov ah, 9
 	mov dx, offset menu
 	int 21h
@@ -86,9 +83,11 @@ gameloop:
 	PrintDot dot_x, dot_y, dot_color
 	PrintDot dot2_x, dot2_y, dot2_color
 
+	call TryEnd
+
 	cmp [pressed_key], 27
 	jz jump_menu_creation
-	call TryEnd
+	
 ; This is only because of the jump disability of 8086...
 gameloop_continue:
 	jmp gameloop

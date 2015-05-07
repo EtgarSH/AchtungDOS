@@ -40,7 +40,7 @@
 	pressed_key db 0
 
 	; strings:
-	menu 	db "          Welcome to Achtung!", 10
+	menu 	db " Welcome to Achtung!", 10
 			db "       Press Enter to start game,", 10
 			db "          Press ESC to exit...", 10, "$"
 
