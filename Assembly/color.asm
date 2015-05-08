@@ -25,8 +25,6 @@ proc DrawColorSquare ; cx - x, dx - y, al - color
 @@loop:
 	int 10h
 
-	
-
 	loop @@loop
 
 

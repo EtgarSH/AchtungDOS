@@ -30,7 +30,6 @@ start:
 	mov ax, @data
 	mov ds, ax
 
-	call GetVideoMode
 	call EnterGraphicsMode
 
 menu_creation:
@@ -59,8 +58,6 @@ game_creation:
 
 	ResetData
 
-
-
 	call DrawFrame
 
 gameloop:
@@ -71,21 +68,23 @@ gameloop:
 
 	call ReadKey
 
-	ConvertToMovement D_KEY, A_KEY, speed_x, speed_y
-	UpdateDot dot_x, dot_y, speed_x, speed_y
+	; Convert the players' input to their movement.
+	ConvertToMovement D_KEY, A_KEY, speed_x, speed_y ; See more documentation in "MoveM.asm"
+	UpdateDot dot_x, dot_y, speed_x, speed_y ; See more documentation in "MoveM.asm"
 
 	ConvertToMovement RIGHT_KEY, LEFT_KEY, speed2_x, speed2_y
 	UpdateDot dot2_x, dot2_y, speed2_x, speed2_y
 
+	; Check if the players had crashed.
 	CheckLocation dot_x, dot_y, dot_in_game
 	CheckLocation dot2_x, dot2_y, dot2_in_game
 
 	PrintDot dot_x, dot_y, dot_color
 	PrintDot dot2_x, dot2_y, dot2_color
 
-	call TryEnd
+	call TryEnd ; See documentation in "LogicP.asm"
 
-	cmp [pressed_key], 27
+	cmp [pressed_key], ESCAPE_KEY
 	jz jump_menu_creation
 	
 ; This is only because of the jump disability of 8086...
@@ -125,22 +124,11 @@ proc EnterGraphicsMode
 	ret
 endp EnterGraphicsMode
 
-proc GetVideoMode
-	push ax
-
-	mov ah, 0fh
-	int 10h
-	mov [last_video_mode], al
-
-	pop ax
-	ret
-endp GetVideoMode
-
+; Return to the Text Mode
 proc ReturnToLastVideoMode
 	push ax
 
 	mov ah, 00h
-	;mov al, [last_video_mode]
 	mov al, 3
 	int 10h
 
