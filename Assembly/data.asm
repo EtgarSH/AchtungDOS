@@ -43,6 +43,7 @@
 			db "          Press ESC to exit...", 10, "$"
 
 	winner_msg db "&9The winner is: $"
+	tie_msg db "&2Wow! It's &5tie! &2Awesome!$"
 
 	; Keys constants
 	ESCAPE_KEY equ 27
@@ -59,11 +60,13 @@ macro ResetData
 
 	mov [speed_x], 1
 	mov [speed_y], 0
+	;RandomLocation dot_x, dot_y
 	mov [dot_x], 160
 	mov [dot_y], 100
 
 	mov [speed2_x], -1
 	mov [speed2_y], 0
+	;RandomLocation dot2_x, dot2_y
 	mov [dot2_x], 120
 	mov [dot2_y], 20
 
@@ -72,3 +75,29 @@ macro ResetData
 
 	mov [remaining_players], 2
 endm ResetData
+
+; Not in use in this version
+macro RandomLocation DOT_X, DOT_Y ; Generating a location for a dot
+	push ax
+	push dx
+
+	; Random x
+	RandomFF
+	mov [DOT_X], ax
+
+	; Random y
+	RandomFF
+	mov [DOT_Y], ax
+
+	pop dx
+	pop ax
+endm RandomLocation
+
+; Not in use in this version
+macro RandomFF ; Random a number in ax of 16 bits
+	mov ah, 2ch
+	int 21h
+	mov ax, dx
+	and ax, 0ffh
+	add ax, 256
+endm RandomFF

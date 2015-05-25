@@ -40,7 +40,8 @@ proc EndGame
 @@end_game_creator:
 	call MoveCursorToCenter
 
-
+	cmp [remaining_players], 0
+	jz @@tie
 
 	mov bx, offset winner_msg
 	call PrintColoredString
@@ -48,6 +49,12 @@ proc EndGame
 	mov bx, offset winner
 	call PrintColoredString
 
+	jmp @@end_tie
+@@tie:
+	mov bx, offset tie_msg
+	call PrintColoredString
+
+@@end_tie:
 	push cx
 	mov cl, [pressed_key]
 @@end_game_loop:
